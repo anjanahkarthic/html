@@ -1,0 +1,34 @@
+---
+- name: Nginx Setup
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Updating Packages
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Installing Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: latest
+
+    - name: Download file using get_url module
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/anjanahkarthic/html/refs/heads/main/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Starting nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+    - name: Getting the status of the nginx service
+      ansible.builtin.shell: systemctl status nginx | grep 'since'
+      register: status
+
+    - name: Show nginx status
+      debug:
+        var: status.stdout
+
