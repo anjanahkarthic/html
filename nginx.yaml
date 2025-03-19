@@ -2,6 +2,7 @@
 - name: Nginx Setup
   hosts: localhost
   become: true
+  connection: local
 
   tasks:
     - name: Updating Packages
@@ -25,10 +26,9 @@
         state: started
 
     - name: Getting the status of the nginx service
-      ansible.builtin.shell: systemctl status nginx | grep 'since'
+      shell: "systemctl status nginx | grep 'since'"
       register: status
 
     - name: Show nginx status
       debug:
         var: status.stdout
-
